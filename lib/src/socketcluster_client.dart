@@ -18,27 +18,17 @@ class Socket extends Emitter {
   static const int CLOSING = 2;
   static const int CLOSED = 3;
 
-  /*Socket(this.url, this.listener, {this.authToken, this.strategy});
+  /// Creates a new SocketCluster client
+  Socket(this.url,
+      {String this.authToken,
+      ReconnectStrategy this.strategy,
+      BasicListener this.listener});
 
-  connect() {
-    WebSocket.connect(url)
-        .then(onSocketOpened)
-        .catchError((e) => listener.onConnectError(this, e));
-  }*/
-
-  Socket._internal(this._socket,
-      {this.authToken, this.strategy, this.listener}) {
+  /// Connects the remote host
+  Future<void> connect() async {
+    this._socket = await WebSocket.connect(url);
     _socket.listen(handleMessage).onDone(onSocketDone);
     onSocketOpened();
-  }
-
-  static Future<Socket> connect(String url,
-      {String authToken,
-      ReconnectStrategy strategy,
-      BasicListener listener}) async {
-    var socket = await WebSocket.connect(url);
-    return new Socket._internal(socket,
-        authToken: authToken, strategy: strategy, listener: listener);
   }
 
   void setProxy(String host, int port) {
