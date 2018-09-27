@@ -160,7 +160,7 @@ class Socket extends Emitter {
     };
   }
 
-  Socket emit(String event, Object data, [AckCall ack]) {
+  void emit(String event, Object data, [AckCall ack]) {
     int count = ++_counter;
     var message = new Map<String, Object>();
     message['event'] = event;
@@ -171,10 +171,9 @@ class Socket extends Emitter {
     }
     var json = jsonEncode(message);
     _socket.add(json);
-    return this;
   }
 
-  Socket subscribe(String channel, [AckCall ack]) {
+  void subscribe(String channel, [AckCall ack]) {
     int count = ++_counter;
     var message = {
       'event': '#subscribe',
@@ -184,19 +183,17 @@ class Socket extends Emitter {
     if (ack != null) _acks[count] = getAckObject(channel, ack);
     var json = jsonEncode(message);
     _socket.add(json);
-    return this;
   }
 
-  Socket unsubscribe(String channel, [AckCall ack]) {
+  void unsubscribe(String channel, [AckCall ack]) {
     int count = ++_counter;
     var message = {'event': '#unsubscribe', 'data': channel, 'cid': count};
     if (ack != null) _acks[count] = getAckObject(channel, ack);
     var json = jsonEncode(message);
     _socket.add(json);
-    return this;
   }
 
-  Socket publish(String channel, Object data, [AckCall ack]) {
+  void publish(String channel, Object data, [AckCall ack]) {
     int count = ++_counter;
     var message = {
       'event': '#publish',
@@ -206,7 +203,6 @@ class Socket extends Emitter {
     if (ack != null) _acks[count] = getAckObject(channel, ack);
     var json = jsonEncode(message);
     _socket.add(json);
-    return this;
   }
 
   List<dynamic> getAckObject(String event, AckCall ack) {
